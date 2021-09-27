@@ -3,6 +3,11 @@
   height: 100000px;
 }
 
+body {
+  margin: 0;
+  padding: 0
+}
+
 html {
   text-align: center;
   padding: 0;
@@ -24,6 +29,10 @@ html::-webkit-scrollbar {
 
 .before-start {
   height: 100vh;
+}
+
+.before-start img {
+  width: 90%
 }
 
 #u {
