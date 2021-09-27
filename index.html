@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>123 木头人 | 鱿鱼游戏</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <div class="before-start">
+    <img style="height: 50vh;" src="Girl.png" alt="" srcset="">
+    <h1>123木头人</h1>
+    <p>no keyboard</p>
+    <p>5 min</p>
+    <p>start when you scroll page</p>
+  </div>
+  <div class="playground"></div>
+  <div class="success"></div>
+  <p id="u">🤭</p>
+  <audio src="" id="wood" hidden></audio>
+  <audio src="" id="bang" hidden></audio>
+
+  <script>
+    var started = false;
+    var scrollY = 0
+    const DISTANCE = 10000
+    const TARGET = DISTANCE + window.innerHeight / 2
+    var finished = false
+    var startTime;
+    var endTime;
+    var duration;
+    var canScroll = false;
+
+    function bang(msg) {
+      console.log(msg)
+      alert('🔫BANG，你死了：' + msg)
+      // 重新开始
+      //document.documentElement.scrollTo(0,0)
+    }
+    document.addEventListener('keydown', e => {
+      bang('no key down, you are dead')
+      e.preventDefault()
+    })
+    document.addEventListener('scroll', e => {
+      if (started === false) {
+        startTime = Date.now()
+        document.querySelector('#u').innerHTML = '😝'
+        console.log('started')
+        started = true
+      }
+      if (started) {
+        scrollY = document.documentElement.scrollTop || document.body.scrollTop
+        if (scrollY >= TARGET) {
+          endTime = Date.now()
+          duration = endTime - startTime
+          console.log('passed')
+          document.querySelector('#u').innerHTML = '🤭'
+          finished = true
+        } else if (scrollY > 0) {
+          document.querySelector('#u').innerHTML = '😝'
+        } else {
+          started = false;
+          document.querySelector('#u').innerHTML = '🤭'
+        }
+      }
+
+
+    })
+
+
+  </script>
+</body>
+
+</html>

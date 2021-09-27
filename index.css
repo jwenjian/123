@@ -1,0 +1,36 @@
+.playground {
+  background-color: lightblue;
+  height: 10000px;
+}
+
+html {
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+.success {
+  height: 100vh;
+  background-color: lightgreen;
+  border-top: 5px red dashed;
+}
+
+.before-start {
+  height: 100vh;
+}
+
+#u {
+  text-align: center;
+  position: fixed;
+  top: 50vh;
+  left: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+}
