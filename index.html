@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>123 木头人 | 鱿鱼游戏</title>
   <link rel="stylesheet" href="index.css">
+  <script src="https://cdn.jsdelivr.net/npm/howler@2.2.3/dist/howler.min.js"></script>
 </head>
 
 <body>
@@ -15,27 +16,57 @@
     <h1>123木头人</h1>
     <p>no keyboard</p>
     <p>5 min</p>
-    <p>start when you scroll page</p>
+    <p>agree and scroll down page</p>
+    <button id="agree">I agree</button>
   </div>
-  <div class="playground"></div>
-  <div class="success"></div>
-  <p id="u">🤭</p>
-  <audio src="" id="wood" hidden></audio>
-  <audio src="" id="bang" hidden></audio>
+  <div class="game">
+    <div class="playground"></div>
+    <div class="success"></div>
+    <p id="u">🤭</p>
+  </div>
 
   <script>
+    document.querySelector("#agree").addEventListener('click', e => {
+      agreed = true
+      document.querySelector('.game').classList.remove('hide')
+      gameSound.play()
+    })
+    document.querySelector('.game').classList.add('hide')
     var started = false;
     var scrollY = 0
-    const DISTANCE = 10000
+    const DISTANCE = 100000
     const TARGET = DISTANCE + window.innerHeight / 2
     var finished = false
     var startTime;
     var endTime;
     var duration;
     var canScroll = false;
+    var gameInterval;
+    var agreed = false;
+    var gameSound = new Howl({
+      src: "game.m4a",
+      onplay: e => {
+        canScroll = true;
+        console.log('runnnnnnnnnnnnnnnnnnn')
+      },
+      onend: e => {
+        canScroll = false
+        console.log('freeeeeeeeeeeeeeeze')
+      }
+    })
+
+    function gamePlayStarted(e) {
+      console.log('start')
+      canScroll = true;
+    }
+    function gamePlayEnded(e) {
+      console.log('end')
+      canScroll = false;
+    }
 
     function bang(msg) {
       console.log(msg)
+      clearInterval(gameInterval)
       alert('🔫BANG，你死了：' + msg)
       // 重新开始
       //document.documentElement.scrollTo(0,0)
@@ -45,25 +76,43 @@
       e.preventDefault()
     })
     document.addEventListener('scroll', e => {
+      if (!agreed) { return }
       if (started === false) {
         startTime = Date.now()
         document.querySelector('#u').innerHTML = '😝'
         console.log('started')
+        gameInterval = setInterval(() => {
+          if (finished) {
+            clearInterval(gameInterval)
+            return
+          }
+          gameSound.play()
+        }, 6000);
         started = true
       }
       if (started) {
+        if (finished) {
+          return
+        }
+        if (!canScroll) {
+          bang('木头人怎么能动呢？')
+          return
+        }
         scrollY = document.documentElement.scrollTop || document.body.scrollTop
         if (scrollY >= TARGET) {
           endTime = Date.now()
           duration = endTime - startTime
           console.log('passed')
           document.querySelector('#u').innerHTML = '🤭'
+          clearInterval(gameInterval)
           finished = true
+          alert('ok')
         } else if (scrollY > 0) {
           document.querySelector('#u').innerHTML = '😝'
         } else {
           started = false;
           document.querySelector('#u').innerHTML = '🤭'
+          clearInterval(gameInterval)
         }
       }
 
