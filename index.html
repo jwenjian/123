@@ -14,8 +14,9 @@
   <div class="before-start">
     <img style="height: 50vh;" src="Girl.png" alt="" srcset="">
     <h1>123木头人</h1>
-    <p>no keyboard</p>
-    <p>5 min</p>
+    <p>规则很简单：鬼说“123木头人”的时候往下滑动页面，鬼不说话不能动，否则就是死；5分钟内滑到底部算赢</p>
+    <p>注意：按键盘就死</p>
+    <p>注意：5分钟没完成也死</p>
     <p>agree and scroll down page</p>
     <button id="agree">I agree</button>
   </div>
@@ -23,15 +24,13 @@
     <div class="playground"></div>
     <div class="success"></div>
     <p id="u">🤭</p>
+    <div class="progress">
+      <p class="info">当前进度： <b id="percernt">0%</b></p>
+    </div>
   </div>
 
   <script>
-    document.querySelector("#agree").addEventListener('click', e => {
-      agreed = true
-      document.querySelector('.game').classList.remove('hide')
-      gameSound.play()
-    })
-    document.querySelector('.game').classList.add('hide')
+
     var started = false;
     var scrollY = 0
     const DISTANCE = 100000
@@ -43,6 +42,7 @@
     var canScroll = false;
     var gameInterval;
     var agreed = false;
+    var dead = false
     var gameSound = new Howl({
       src: "game.m4a",
       onplay: e => {
@@ -65,32 +65,69 @@
     }
 
     function bang(msg) {
-      console.log(msg)
+
+      if (dead) {
+        return
+      }
+
+      dead = true
+      let deadTime = Date.now()
+      let result = `
+      🔫 BANG!
+      你死了！
+      用时 ${Math.floor(deadTime - startTime) / 1000} s
+      前进了 ${Math.floor(100 * scrollY / TARGET)}%
+      `
       clearInterval(gameInterval)
-      alert('🔫BANG，你死了：' + msg)
+      console.log(result)
+      alert(result)
       location.reload()
-      // 重新开始
-      //document.documentElement.scrollTo(0,0)
     }
+
+    document.querySelector("#agree").addEventListener('click', e => {
+      agreed = true
+      startTime = Date.now()
+      document.querySelector('#u').innerHTML = '😝'
+      console.log('started')
+      gameInterval = setInterval(() => {
+        if (finished) {
+          clearInterval(gameInterval)
+          return
+        }
+        gameSound.play()
+      }, 6000);
+      started = true
+      document.querySelector('.game').classList.remove('hide')
+      gameSound.play()
+      document.querySelector('.progress').classList.remove('hide')
+      setTimeout(() => {
+        // 5 min
+        if (dead) {
+          return
+        }
+        if (!finished) {
+          bang()
+          return
+        }
+      }, 300000);
+    })
+    document.querySelector('.game').classList.add('hide')
+    document.querySelector('.progress').classList.add('hide')
+
     document.addEventListener('keydown', e => {
       bang('no key down, you are dead')
       e.preventDefault()
     })
     document.addEventListener('scroll', e => {
-      if (!agreed) { return }
-      if (started === false) {
-        startTime = Date.now()
-        document.querySelector('#u').innerHTML = '😝'
-        console.log('started')
-        gameInterval = setInterval(() => {
-          if (finished) {
-            clearInterval(gameInterval)
-            return
-          }
-          gameSound.play()
-        }, 6000);
-        started = true
+      if (!agreed) {
+        e.preventDefault()
+        return
       }
+      if (!started) {
+        e.preventDefault();
+        return
+      }
+
       if (started) {
         if (finished) {
           return
@@ -100,6 +137,8 @@
           return
         }
         scrollY = document.documentElement.scrollTop || document.body.scrollTop
+        let progress = `${Math.floor(100 * scrollY / TARGET)}%`
+        document.querySelector('#percernt').innerHTML = progress
         if (scrollY >= TARGET) {
           endTime = Date.now()
           duration = endTime - startTime
