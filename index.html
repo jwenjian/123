@@ -45,6 +45,7 @@
     var agreed = false;
     var dead = false
     var rate = 1
+    var gameSoundLoaded = false
 
     var gameSound = new Howl({
       src: "game.m4a",
@@ -55,6 +56,9 @@
       onend: e => {
         canScroll = false
         console.log('freeeeeeeeeeeeeeeze')
+      },
+      onload: e => {
+        gameSoundLoaded = true
       }
     })
 
@@ -76,10 +80,14 @@
       dead = true
       let deadTime = Date.now()
       let duration = 0
-      duration = Math.floor(deadTime - startTime) / 1000
+      if (startTime) {
+        duration = Math.floor(deadTime - startTime) / 1000
+      }
+      
       let result = `
-      🔫 BANG!
+      🔫 BANG! 🔫
       你死了！
+      ${msg} 
       用时 ${duration} s
       前进了 ${Math.floor(100 * scrollY / TARGET)}%
       `
@@ -90,16 +98,24 @@
     }
 
     document.querySelector("#agree").addEventListener('click', e => {
+      // 确保游戏声音已经加载完毕，再开始游戏
+      if (!gameSoundLoaded) {
+        return
+      }
       agreed = true
+      // 记录开始时间
       startTime = Date.now()
       document.querySelector('#u').innerHTML = '😝'
       console.log('started')
+      // 每 6 秒钟播放一次音乐
       gameInterval = setInterval(() => {
         if (finished) {
           clearInterval(gameInterval)
           return
         }
+        // 播放速度每次增加 0.2
         rate = rate + 0.2
+        // 最大播放速度为 3 ， 最高支持到 4
         if (rate >= 3) {
           rate = 3
         }
@@ -110,13 +126,15 @@
       document.querySelector('.game').classList.remove('hide')
       gameSound.play()
       document.querySelector('.progress').classList.remove('hide')
+
+      // 5 分钟之后检查游戏状态，如果没完成，直接bang掉
       setTimeout(() => {
         // 5 min
         if (dead) {
           return
         }
         if (!finished) {
-          bang()
+          bang("时间到，清场！")
           return
         }
       }, 300000);
@@ -125,13 +143,13 @@
     document.querySelector('.progress').classList.add('hide')
 
     document.addEventListener('keydown', e => {
-      bang('no key down, you are dead')
+      bang('说了不让按键盘，还按？')
       e.preventDefault()
     })
     document.addEventListener('mousedown', e => {
       if (e.button === 1) {
         e.preventDefault()
-        bang()
+        bang('说了不让按鼠标中键，还按？')
         return
       }
      
