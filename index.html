@@ -43,6 +43,8 @@
     var gameInterval;
     var agreed = false;
     var dead = false
+    var rate = 1
+
     var gameSound = new Howl({
       src: "game.m4a",
       onplay: e => {
@@ -94,6 +96,11 @@
           clearInterval(gameInterval)
           return
         }
+        rate = rate + 0.2
+        if (rate >= 3) {
+          rate = 3
+        }
+        gameSound.rate(rate)
         gameSound.play()
       }, 6000);
       started = true
