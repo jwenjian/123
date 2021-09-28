@@ -4,9 +4,29 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable='no'">
+  <!-- Primary Meta Tags -->
   <title>123 木头人 | 鱿鱼游戏</title>
+  <meta name="title" content="123 木头人 | 鱿鱼游戏">
+  <meta name="description" content="韩剧鱿鱼游戏第一关，123木头人在线版本，点击同意之后在5分钟内将页面划到底部就算赢！">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://123mtr.vercel.app/">
+  <meta property="og:title" content="123 木头人 | 鱿鱼游戏">
+  <meta property="og:description" content="韩剧鱿鱼游戏第一关，123木头人在线版本，点击同意之后在5分钟内将页面划到底部就算赢！">
+  <meta property="og:image" content="https://123mtr.vercel.app/Girl.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://123mtr.vercel.app/">
+  <meta property="twitter:title" content="123 木头人 | 鱿鱼游戏">
+  <meta property="twitter:description" content="韩剧鱿鱼游戏第一关，123木头人在线版本，点击同意之后在5分钟内将页面划到底部就算赢！">
+  <meta property="twitter:image" content="https://123mtr.vercel.app/Girl.png">
+
   <link rel="stylesheet" href="index.css">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎃</text></svg>">
   <script src="https://cdn.jsdelivr.net/npm/howler@2.2.3/dist/howler.min.js"></script>
 </head>
 
@@ -51,26 +71,30 @@
       src: "game.m4a",
       onplay: e => {
         canScroll = true;
-        console.log('runnnnnnnnnnnnnnnnnnn')
       },
       onend: e => {
         canScroll = false
-        console.log('freeeeeeeeeeeeeeeze')
       },
       onload: e => {
         gameSoundLoaded = true
       }
     })
 
-    function gamePlayStarted(e) {
-      console.log('start')
-      canScroll = true;
+    function pass() {
+      let deadTime = Date.now()
+      let duration = 0
+      if (startTime) {
+        duration = Math.floor(deadTime - startTime) / 1000
+      }
+      let result = `
+      🎉恭喜你通过第一关的考验🎉
+      用时 ${duration}s
+      祝你好运
+      `
+      alert(result)
+      location.reload()
     }
-    function gamePlayEnded(e) {
-      console.log('end')
-      canScroll = false;
-    }
-
+    
     function bang(msg) {
 
       if (dead) {
@@ -83,7 +107,7 @@
       if (startTime) {
         duration = Math.floor(deadTime - startTime) / 1000
       }
-      
+
       let result = `
       🔫 BANG! 🔫
       你死了！
@@ -152,7 +176,7 @@
         bang('说了不让按鼠标中键，还按？')
         return
       }
-     
+
     })
     document.addEventListener('scroll', e => {
       if (!agreed) {
@@ -182,7 +206,8 @@
           document.querySelector('#u').innerHTML = '🤭'
           clearInterval(gameInterval)
           finished = true
-          alert('ok')
+          pass()
+          return
         } else if (scrollY > 0) {
           document.querySelector('#u').innerHTML = '😝'
         } else {
