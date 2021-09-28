@@ -13,12 +13,13 @@
 <body>
   <div class="before-start">
     <img style="height: 50vh;" src="Girl.png" alt="" srcset="">
-    <h1>123木头人</h1>
+    <h1 class="shadow">123木头人</h1>
     <p>规则很简单：鬼说“123木头人”的时候往下滑动页面，鬼不说话不能动，否则就是死；5分钟内滑到底部算赢</p>
     <p>注意：按键盘就死</p>
+    <p>注意：按鼠标中键也死</p>
     <p>注意：5分钟没完成也死</p>
-    <p>agree and scroll down page</p>
-    <button id="agree">I agree</button>
+    <p>点击下方【我同意】按钮开始游戏</p>
+    <button id="agree">我同意</button>
   </div>
   <div class="game">
     <div class="playground"></div>
@@ -74,10 +75,12 @@
 
       dead = true
       let deadTime = Date.now()
+      let duration = 0
+      duration = Math.floor(deadTime - startTime) / 1000
       let result = `
       🔫 BANG!
       你死了！
-      用时 ${Math.floor(deadTime - startTime) / 1000} s
+      用时 ${duration} s
       前进了 ${Math.floor(100 * scrollY / TARGET)}%
       `
       clearInterval(gameInterval)
@@ -124,6 +127,14 @@
     document.addEventListener('keydown', e => {
       bang('no key down, you are dead')
       e.preventDefault()
+    })
+    document.addEventListener('mousedown', e => {
+      if (e.button === 1) {
+        e.preventDefault()
+        bang()
+        return
+      }
+     
     })
     document.addEventListener('scroll', e => {
       if (!agreed) {

@@ -11,6 +11,12 @@ html {
   scrollbar-width: none; 
 }
 
+.shadow {
+  font-size: xxx-large;
+    font-weight: 700;
+    text-shadow: 4px 0px 0px yellow, 6px 2px 2px darkorange;
+    color: darkred;
+}
 html::-webkit-scrollbar {
   display: none;
 }
