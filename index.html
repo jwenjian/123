@@ -92,6 +92,9 @@
     if (window.DeviceMotionEvent) {
       window.addEventListener('devicemotion', e => {
         document.querySelector('#device').innerHTML = JSON.stringify(e)
+        if (e.accelerationIncludingGravity > 0) {
+          document.documentElement.scrollBy(0, document.documentElement.scrollHeight + 100)
+        }
       })
     } else {
       alert('no device motion supported')
