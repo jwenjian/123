@@ -134,6 +134,10 @@
     }
 
     document.querySelector("#agree").addEventListener('click', e => {
+      // 防止按钮重复点击
+      if (agreed) {
+        return
+      }
       // 确保游戏声音已经加载完毕，再开始游戏
       if (!gameSoundLoaded) {
         return
@@ -212,6 +216,10 @@
         let progress = `${Math.floor(100 * scrollY / TARGET)}%`
         document.querySelector('#percernt').innerHTML = progress
         if (scrollY >= TARGET) {
+          // 防止出现死亡提示后又出现成功提示
+          if (dead) {
+            return
+          }
           endTime = Date.now()
           duration = endTime - startTime
           if (duration < 5000) {
