@@ -81,6 +81,10 @@
       }
     })
 
+    var gunSound = new Howl({
+      src: 'gun.mp3'
+    })
+
     function pass() {
       let deadTime = Date.now()
       let duration = 0
@@ -119,6 +123,8 @@
       clearInterval(gameInterval)
       console.log(result)
 
+      // 播放枪声
+      gunSound.play()
       // 如果支持手机震动，震动1秒钟
       if (navigator.vibrate) {
         navigator.vibrate([1000])
