@@ -214,6 +214,10 @@
         if (scrollY >= TARGET) {
           endTime = Date.now()
           duration = endTime - startTime
+          if (duration < 5000) {
+            bang("👻：我一遍都没说完你就通过了，你杀死了这个比赛，我很生气，现在你也要死！")
+            return
+          }
           console.log('passed')
           document.querySelector('#u').innerHTML = '🤭'
           clearInterval(gameInterval)
